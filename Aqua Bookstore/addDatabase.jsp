@@ -47,15 +47,21 @@
           Statement stmt = con.createStatement();
           
           // First I check out whether in the table publisher record with the entered publisher name and city exists
-            // To do that I do the select in the publisher table to check whether the record with entered publisher name and city exists.
-            // If the select returns no record then I do the insert
-            // 1. the select statement
-            stmt = con.createStatement(); 
-            String rs_query="";
-            boolean empty_field = false;
-            // if the publisher's name is entered
-            // ResultSet rs = stmt.executeQuery("select title,isbn from book where title = '"+book_title+"'");  // ,book_location
-         
+          // To do that I do the select in the publisher table to check whether the record with entered publisher name and city exists.
+          // If the select returns no record then I do the insert
+          // 1. the select statement
+          //stmt = con.createStatement(); 
+          String rs_query=""; 
+          ResultSet rs; // object where the query's results are stored
+          boolean empty_field = false;
+          // if the publisher's name is entered
+          // ResultSet rs = stmt.executeQuery("select title,isbn from book where title = '"+book_title+"'");  // ,book_location
+          
+          // if the user didn't enter anything for the publisher name and city then don't do anything, otherwise add the entered values into the 
+          // database
+          if (((formpubl.equalsIgnoreCase(""))) && (((formcity.equalsIgnoreCase("")))))
+              empty_field = true;
+          if (!(empty_field)){
             // if the publisher's name is entered
             if (!((formpubl.equalsIgnoreCase("")))) {
                 out.print("Not empty");
@@ -64,13 +70,10 @@
             if (!((formcity.equalsIgnoreCase("")))) {
                 rs_query += "AND (city = '" + formcity + "')";
             }
-            
-            if ((!((formpubl.equalsIgnoreCase("")))) && (!((formcity.equalsIgnoreCase("")))))
-                empty_field = true;
-            
+          
             rs_query += ";";
             out.print("rs_query: " + rs_query);
-            ResultSet rs = stmt.executeQuery(rs_query);
+            rs = stmt.executeQuery(rs_query);
             // if the record with the ntered value for the publisher name and city doesn't exist that add that record
             if (!rs.next()) {
                 // check out whether in the database there could be only the name of the publisher and not the city 
@@ -88,34 +91,53 @@
                     preparedStmt.execute();
                     // update publisher set city='SU' where publ_id='28';
                 } else {
-                // 2. the insert statement
-                String query = "insert into publisher(publ_name, city) values('" + formpubl + "','" + formcity + "');";
-                out.print("query: " + query);
-                PreparedStatement preparedStmt = con.prepareStatement(query);
-                preparedStmt.execute();
+                  // 2. the insert statement
+                  String query = "insert into publisher(publ_name, city) values('" + formpubl + "','" + formcity + "');";
+                  out.print("query: " + query);
+                  PreparedStatement preparedStmt = con.prepareStatement(query);
+                  preparedStmt.execute();
                 }
             }
-            
-            // First I check out whether in the table author record with the entered author's name exists 
-            // To do that I do the select in the author table to check whether the record with entered author's name exists.
-            // If the select returns no record then I do the insert
-            // 1. the select statement
-            stmt = con.createStatement(); 
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111 add here the empty part
+          }
+          
+          // table author
+          // First I check whether in the table author record with the entered author's name exists 
+          // To do that I do the select in the author table to check whether the record with entered author's name exists.
+          // If the select returns no record then I do the insert
+          // 1. the select statement
+          stmt = con.createStatement(); 
+          rs_query="";
+          empty_field = false; // the user entered a value in the author input field
+          // if the user didn't enter anything for the author's name then nothing should be done, otherwise add the entered values into the 
+          // database
+          if (formauth.equalsIgnoreCase(""))
+              empty_field = true;
+          if (!(empty_field)){
             rs_query = "select au_name from author where (au_name = '"+formauth+"');";
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111 add here the empty part
+            // rs_query = "select au_name from author where (au_name = '"+formauth+"');";
             out.print("rs_query: " + rs_query);
             rs = stmt.executeQuery(rs_query);
+
+            // 2. the insert statement - in case the author with that name doesn't exist in the table author
             if (!rs.next()) {
-                // 2. the insert statement
                 String query = "insert into author(au_name) values('" + formauth + "');";
                 out.print("query: " + query);
                 PreparedStatement preparedStmt = con.prepareStatement(query);
                 preparedStmt.execute();
             }
-            
-            //query = "insert into author(au_name) values('ingrid');";
-            //preparedStmt = con.prepareStatement(query);
-            //preparedStmt.execute();
+          }
+          
+          // if the user entered a publisher's AND author's name AND ( the book's title OR isbn )then insert the entered values into the database
+          if (((!(formpubl.equalsIgnoreCase(""))) && (!(formauth.equalsIgnoreCase("")))) && ((!(formtitle.equalsIgnoreCase(""))) || (!(formisbn.equalsIgnoreCase(""))))){
+            String query = "insert into book(au_id, publ_id, title, isbn ) values ((select au_id from author where au_name='" + formauth + "'),"
+                    + " (select publ_id from publisher where (publ_name='" + formpubl + "') and (city='" + formcity + "')),'" + formtitle + "','" + formisbn + "');";
+            out.print(query); 
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            preparedStmt.execute(); 
+          } else {
+              out.print("Show the paage that the user has to enter publisher's name and author");
+          }
             
             /*
             String query = "insert into book(au_id, publ_id, title, isbn ) values ((select au_id from author where au_name='" + formauth + "'),"
