@@ -40,7 +40,7 @@
                                 <br/>
                                 <h3>Search</h3><br/>
                                 <%!
-                                    // cont_wildcard returns true if the string contains one of wildcards % or _. Otherwise it returns false
+                                    // cont_wildcard returns true if the string contains one of wildcards % or _. Otherwise it returns false.
                                     boolean cont_wildcard(String str)
                                     {
                                         CharSequence undersc = "_";
@@ -114,64 +114,82 @@
                                     }
                                     */
                                     
-                                    String tempStr;
+                                    String tempStr; // used for building of the query 
+                                    // has the user choosen Fiction & Poetry ( drop down box ) for the Category, assign that to the tempStr
                                     if (form_categ.equalsIgnoreCase("fict"))
                                         tempStr = "Fiction & Poetry";
+                                    // has the user choosen Business ( drop down box ) for the Category, assign that to the tempStr
                                     else if (form_categ.equalsIgnoreCase("bus"))
                                         tempStr = "Business";
+                                    // has the user choosen Education ( drop down box ) for the Category, assign that to the tempStr
                                     else if (form_categ.equalsIgnoreCase("edu"))
                                         tempStr = "Education";
+                                    // has the user choosen Computing & IT ( drop down box ) for the Category, assign that to the tempStr
                                     else if (form_categ.equalsIgnoreCase("comp"))
                                         tempStr = "Computing & IT";
+                                    // has the user choosen Children's ( drop down box ) for the Category, assign that to the tempStr
                                     else if (form_categ.equalsIgnoreCase("child"))
-                                        tempStr = "Children's";
+                                        tempStr = "Children";
                                     else
                                         tempStr="";
                                     
+                                    // build the query by adding whether the category is tempStr
                                     if (!(tempStr.equalsIgnoreCase(""))) 
                                         sQuery += " AND (b.category='" + tempStr + "')";
                                     
                                     tempStr="";
+                                    // if the user chose for the the price range <5 GBP
                                     if (form_price.equalsIgnoreCase("less5"))
-                                        tempStr = "<5";
+                                        tempStr = "< 5"; 
+                                    // if the user chose for the the price range between 5GBP and 10GBP
                                     else if (form_price.equalsIgnoreCase("betw5-10"))
                                         tempStr = "BETWEEN 5 AND 10";
+                                    // if the user chose for the the price range between 10GBP and 20GBP
                                     else if (form_price.equalsIgnoreCase("betw10-20"))
                                         tempStr = "BETWEEN 10 AND 20";
+                                    // if the user chose for the the price range between 20GBP and 30GBP
                                     else if (form_price.equalsIgnoreCase("betw20-30"))
                                         tempStr = "BETWEEN 20 AND 30";
+                                    // if the user chose for the the price range between 30GBP and 50GBP
                                     else if (form_price.equalsIgnoreCase("betw30-50"))
                                         tempStr = "BETWEEN 30 AND 50";
+                                    // if the user chose for the the price range above 50GBP
                                     if (form_price.equalsIgnoreCase("above50"))
-                                        tempStr = ">50";
+                                        tempStr = "> 50";
                                     
+                                    // build the query by adding whether the price is in required range
                                     if (!(tempStr.equalsIgnoreCase(""))) 
-                                        sQuery += " AND (b.price '" + tempStr + "' )";
+                                        sQuery += " AND (b.price " + tempStr + " )";
                                    
+                                    // add whether the query results should be sorted ASC or DESC based on the user's choice
                                     sQuery += " ORDER BY b.price ";
                                     if (form_sortby.equalsIgnoreCase("low")) 
                                         sQuery += "ASC";
                                     else
                                         sQuery += "DESC";
-                                    // out.print("sQuery: " + sQuery );
+                                    
                                     
                                     sQuery += ";";
-                                    out.print(sQuery);
+                                    // out.print(sQuery);
+                                    // execute the query - the result will be in the rs
                                     ResultSet rs = stmt.executeQuery(sQuery);
+                                    // show the result in an unordered list
                                     out.print("<ul>");
+                                    // if in the result set there is the next row
                                     while(rs.next())
                                     {
-                                        // out.print("*");
+                                        // read the value of the title 
                                         String sTitle = rs.getString("title");
-                                        // out.print(sTitle);
+                                        // read the value of the name of the author
                                         String sAuthor = rs.getString("au_name");
+                                        // read the price
                                         String sPrice = rs.getString("price");
-                                        // out.print("<li>Title: " + sTitle);
+                                        // show the value for the title, author and price
                                         out.print("<li>Title: " + sTitle + " by" + sAuthor + "price: " + sPrice + "</li>" );
                                     }
                                     out.print("</ul>");
-                                    // out.print("form_sortby" + form_sortby);
                                 }catch(Exception e){
+                                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! show the error on another page
                                     out.print("Exception" + e);
                                 }
                                 %>
