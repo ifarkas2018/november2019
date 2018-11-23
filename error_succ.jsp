@@ -9,7 +9,19 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Search Book</title>
+        <!-- <title>Search Book</title> -->
+        <%
+            HttpSession hSession = request.getSession();
+            //String sMessage = (String)hSession.getAttribute("message");
+            //String sMessage = (String)hSession.getAttribute("message");
+            //String sTitle = (String)hSession.getAttribute("title");
+            String sSourceName = (String)hSession.getAttribute("source_name");
+            if (sSourceName.equalsIgnoreCase("Add Book")){
+                out.print("<title>Add Book</title>");
+            } else if (sSourceName.equalsIgnoreCase("Search")){
+                out.print("<title>Search</title>"); 
+            }
+        %>    
         <link href="css/templatecss.css" rel="stylesheet" type="text/css">
         <style>
             .red_text {
@@ -36,10 +48,11 @@
                                 <br/>
                                 <!-- <h3>Search</h3> --><br/><br/><br/>
                                 <%
-                                    HttpSession hSession = request.getSession();
+                                    //HttpSession hSession = request.getSession();
                                     // the title passed from the other JSP ( addDB.jsp or searchDb.jsp )
                                     //String sJSPFile = (String)hSession.getAttribute("jsp_file");
                                     String sSource = (String)hSession.getAttribute("source_name");
+                                    
                                     String sTitle = (String)hSession.getAttribute("title");
                                     // the message passed from the other JSP ( addDB.jsp or searchDb.jsp )
                                     String sMessage = (String)hSession.getAttribute("message");

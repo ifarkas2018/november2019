@@ -61,13 +61,14 @@
                                     String form_sortby = request.getParameter("sortby"); // the text entered as the sortby
                                     String form_categ = request.getParameter("categ"); // the option chosen in the drop-down list - category
                                     String form_price = request.getParameter("price_range"); // the option chosen in the drop-down list - price
+                                    String form_publyear = request.getParameter("publ_year"); // the text entered as the publ_year
                                 %>  
                                 <%
                                     Class.forName("com.mysql.jdbc.Driver");
                                     Connection  con = DriverManager.getConnection("jdbc:mysql://localhost:3305/bookstore?useSSL=false", "root", "bird&2018");  
                                     Statement stmt = con.createStatement();
                                     
-                                    String sQuery = "select b.title, b.price, a.au_name from book b, author a where (b.au_id = a.au_id)";
+                                    String sQuery = "select b.title, b.price, b.publ_year, a.au_name from book b, author a where (b.au_id = a.au_id)";
                                     //ResultSet rs = stmt.executeQuery("select title, au_name from book b, author a where (b.au_id = a.au_id) AND (title='" + 
                                     //form_title + "') AND (au_name='" + form_auth + "');");
                                   
@@ -162,6 +163,15 @@
                                     if (!(tempStr.equalsIgnoreCase(""))) 
                                         sQuery += " AND (b.price " + tempStr + " )";
                                    
+                                    // if there is anything entered in the input field with the label Publication Year
+                                    if (!(form_publyear.equalsIgnoreCase(""))) {
+                                        // if the title contains ? or _ then add the Like 
+                                        if (cont_wildcard(form_publyear))
+                                            sQuery += " AND (b.publ_year LIKE '" + form_publyear + "')";
+                                        else
+                                            sQuery += " AND (b.publ_year='" + form_publyear + "')";
+                                    }
+                                    
                                     // add whether the query results should be sorted ASC or DESC based on the user's choice
                                     sQuery += " ORDER BY b.price "; // - PUT BACK 
                                     // ERROR TESTING - UNCOMMENT- START !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
