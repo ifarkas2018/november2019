@@ -1,0 +1,20 @@
+/* author: Ingrid Farkas */
+
+body {
+    background: rgb(155, 145, 145);
+}
+
+.content {
+    max-width: 1300px;
+    margin: auto;
+    background: white;
+}
+  
+/* setting the background color of the element */ 
+.w3-theme-m1 {color:#000 !important; background-color:#e9f0f6 !important}
+/* when the user hovers the mouse over the element, setting the background color and the color of the text of the element */
+.w3-hover-theme-l4:hover {color:rgb(248, 198, 104) !important; background-color:#e9f0f6 !important}
+/* when the user hovers the mouse over the element, setting the color of the text of the element */
+.w3-hover-text-orange:hover { color: rgb(248, 198, 104) !important }  
+/* setting the color of the text of the element */ 
+.w3-text-theme-m1 { color:#0073d8 !important }
